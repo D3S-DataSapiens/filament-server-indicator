@@ -10,15 +10,15 @@ A Filament v4 plugin that displays server information, app version, and copyrigh
 
 ## Installation
 
+### Step 1: Install via Composer
+
 ```bash
 composer require d3s-datasapiens/filament-server-indicator
 ```
 
-## Configuration
+### Step 2: Register the Plugin
 
-### Register the Plugin
-
-Add the plugin to your Filament panel provider:
+Add the plugin to your Filament panel provider (e.g., `app/Providers/Filament/AdminPanelProvider.php`):
 
 ```php
 use D3SDataSapiens\ServerIndicator\ServerIndicatorPlugin;
@@ -34,10 +34,34 @@ public function panel(Panel $panel): Panel
 }
 ```
 
-### Publish Configuration (Optional)
+### Step 3: Publish Assets (Optional)
+
+#### Publish Configuration
+
+To customize the default settings:
 
 ```bash
 php artisan vendor:publish --tag=server-indicator-config
+```
+
+This publishes `config/server-indicator.php`.
+
+#### Publish Views
+
+To customize the footer layout:
+
+```bash
+php artisan vendor:publish --tag=server-indicator-views
+```
+
+This publishes views to `resources/views/vendor/server-indicator/`.
+
+#### Publish Everything
+
+To publish all assets at once:
+
+```bash
+php artisan vendor:publish --provider="D3SDataSapiens\ServerIndicator\ServerIndicatorServiceProvider"
 ```
 
 ## Usage
@@ -99,6 +123,8 @@ ServerIndicatorPlugin::make()
 
 ## Environment Variables
 
+Add these to your `.env` file:
+
 ```env
 # App version displayed in footer
 APP_VERSION=1.0.0
@@ -120,11 +146,39 @@ After publishing, you can customize `config/server-indicator.php`:
 
 ```php
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    */
     'version' => env('APP_VERSION', '1.0.0'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cookie Name
+    |--------------------------------------------------------------------------
+    */
     'cookie_name' => env('SERVER_INDICATOR_COOKIE', 'SRVNAME'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Server Name Prefix to Remove
+    |--------------------------------------------------------------------------
+    */
     'strip_prefix' => '/^load-balanced-/',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Copyright Text
+    |--------------------------------------------------------------------------
+    */
     'copyright' => env('SERVER_INDICATOR_COPYRIGHT', '© :year D3S'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Logging Configuration
+    |--------------------------------------------------------------------------
+    */
     'logging' => [
         'enabled' => env('SERVER_INDICATOR_LOG', false),
         'channel' => env('SERVER_INDICATOR_LOG_CHANNEL', 'stack'),
@@ -132,6 +186,11 @@ return [
         'include_tenant' => true,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Display Options
+    |--------------------------------------------------------------------------
+    */
     'display' => [
         'show_version' => true,
         'show_server' => true,
@@ -139,6 +198,42 @@ return [
     ],
 ];
 ```
+
+## Customizing the Footer View
+
+After publishing the views, you can customize `resources/views/vendor/server-indicator/footer.blade.php`:
+
+```blade
+<div class="flex items-center justify-center gap-x-1 text-sm text-gray-500 dark:text-gray-400">
+    @if($showCopyright && $copyright)
+        <span>{{ $copyright }}</span>
+    @endif
+
+    @if($showCopyright && $copyright && ($showVersion || ($showServer && $server)))
+        <span>|</span>
+    @endif
+
+    @if($showVersion && $version)
+        <span>{{ $version }}</span>
+    @endif
+
+    @if($showVersion && $version && $showServer && $server)
+        <span>|</span>
+    @endif
+
+    @if($showServer && $server)
+        <span>{{ $server }}</span>
+    @endif
+</div>
+```
+
+Available variables in the view:
+- `$copyright` - The formatted copyright text
+- `$version` - The version string
+- `$server` - The server name (from cookie)
+- `$showCopyright` - Whether to show copyright
+- `$showVersion` - Whether to show version
+- `$showServer` - Whether to show server name
 
 ## API Reference
 
@@ -153,6 +248,23 @@ return [
 | `showServer(bool $show)` | Show/hide server name |
 | `showCopyright(bool $show)` | Show/hide copyright |
 | `tenantResolver(Closure $resolver)` | Custom tenant resolver for logging |
+
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## Security
+
+If you discover any security-related issues, please email security@d3s.com.br instead of using the issue tracker.
+
+## Credits
+
+- [Claudio Pereira](https://github.com/cpereiraweb)
+- [All Contributors](../../contributors)
 
 ## License
 

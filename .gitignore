@@ -4,3 +4,9 @@
 /composer.lock
 .phpunit.result.cache
 .DS_Store
+
+# Claude Code / MCP
+CLAUDE.md
+.basicmemory/
+.claude/
+.mcp.json
