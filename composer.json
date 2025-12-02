@@ -1,12 +1,13 @@
 {
     "name": "d3s-datasapiens/filament-server-indicator",
     "description": "A Filament v4 plugin that displays server information and app version in the panel footer",
+    "type": "library",
     "keywords": ["filament", "laravel", "server", "indicator", "footer", "load-balancer"],
     "license": "MIT",
     "authors": [
         {
             "name": "D3S DataSapiens",
-            "email": "dev@datasapiens.dev"
+            "email": "cpereiraweb@gmail.com"
         }
     ],
     "require": {
