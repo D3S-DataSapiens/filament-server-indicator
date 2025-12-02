@@ -1,0 +1,10 @@
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+    tmpDir: .phpstan.cache
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\Contracts\\Auth\\Factory::user\(\)#'
